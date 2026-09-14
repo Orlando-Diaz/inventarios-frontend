@@ -14,18 +14,18 @@
       </tr>
     </thead>
     <tbody>
-      <tr>
-        <th scope="row">1</th>
-        <td>Mark</td>
-        <td>Otto</td>
-        <td>mdo</td>
-      </tr>
-      <tr>
-        <th scope="row">2</th>
-        <td>Jacob</td>
-        <td>Thornton</td>
-        <td>fat</td>
-      </tr>
+      @for (producto of productos(); track producto.idProducto) {
+        <tr>
+          <th scope="row">{{ producto.idProducto }}</th>
+          <td>{{ producto.descripcion }}</td>
+          <td>{{ producto.precio | currency:'COP' }}</td>
+          <td>{{ producto.existencia }}</td>
+        </tr>
+      } @empty {
+        <tr>
+          <td colspan="4">No hay productos registrados</td>
+        </tr>
+      }
     </tbody>
   </table>
 </div>
