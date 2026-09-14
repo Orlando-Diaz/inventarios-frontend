@@ -1,59 +1,145 @@
-# InventariosFrontend
+# Inventarios (Frontend)
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.1.8.
+Interfaz web desarrollada en Angular para el sistema de control de inventario. Consume la API REST del [backend en Spring Boot](https://github.com/Orlando-Diaz/control-inventario).
 
-## Development server
+## 📋 Descripción
 
-To start a local development server, run:
+Aplicación frontend que permite visualizar el inventario de productos registrados, consumiendo los datos en tiempo real desde el backend.
 
-```bash
-ng serve
+## 🛠️ Stack tecnológico
+
+- **Angular 22** (standalone components, Signals)
+- **TypeScript**
+- **Bootstrap 5.3.8** (vía CDN, con tema oscuro `data-bs-theme="dark"`)
+- **RxJS** (manejo de peticiones HTTP asíncronas)
+
+## 📁 Estructura del proyecto
+
+```
+inventarios-frontend/
+├── src/
+│   ├── app/
+│   │   ├── models/
+│   │   │   └── Producto.ts              # Modelo de datos
+│   │   ├── services/
+│   │   │   └── productoService.ts       # Servicio HTTP hacia el backend
+│   │   ├── producto-lista/
+│   │   │   ├── producto-lista.ts        # Lógica del componente
+│   │   │   ├── producto-lista.html      # Tabla de productos
+│   │   │   └── producto-lista.css
+│   │   ├── app.ts                        # Componente raíz
+│   │   ├── app.html
+│   │   └── app.config.ts                 # Configuración global (HttpClient, etc.)
+│   ├── index.html                        # Incluye Bootstrap vía CDN
+│   └── styles.css
+├── angular.json
+└── package.json
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## 🗃️ Modelo de datos
 
-## Code scaffolding
+### Producto (`models/Producto.ts`)
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
+```typescript
+export class Producto {
+  idProducto: number;
+  descripcion: string;
+  precio: number;
+  existencia: number;
+}
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Corresponde a la entidad `Producto` del backend.
 
-```bash
-ng generate --help
+## 🔌 Conexión con el backend
+
+El `ProductoService` (`services/productoService.ts`) centraliza todas las peticiones HTTP hacia la API REST:
+
+| Método del servicio          | Endpoint consumido                          | Descripción                     |
+|-------------------------------|----------------------------------------------|----------------------------------|
+| `obtenerTodos()`              | `GET /api/productos`                         | Lista todos los productos        |
+| `obtenerPorId(id)`            | `GET /api/productos/{id}`                    | Obtiene un producto por id       |
+| `crear(producto)`             | `POST /api/productos`                        | Crea un nuevo producto           |
+| `actualizar(id, producto)`    | `PUT /api/productos/{id}`                    | Actualiza un producto existente  |
+| `eliminar(id)`                | `DELETE /api/productos/{id}`                 | Elimina un producto              |
+| `buscarPorDescripcion(desc)`  | `GET /api/productos/buscar?descripcion=X`    | Busca productos por descripción  |
+
+**URL base configurada:** `http://localhost:8080/api/productos`
+
+> ⚠️ El backend debe tener CORS habilitado para `http://localhost:4200` (ya configurado en el proyecto backend).
+
+## 🖥️ Componentes
+
+### `ProductoLista`
+
+Componente principal que muestra el listado de productos en una tabla con estilos de Bootstrap. Usa **Signals** de Angular para manejar el estado reactivo de la lista:
+
+```typescript
+productos = signal<Producto[]>([]);
 ```
 
-## Building
+Los datos se cargan al inicializar el componente (`ngOnInit`) y se renderizan con la sintaxis moderna de control de flujo `@for` / `@empty`.
 
-To build the project run:
+## ⚙️ Configuración
 
-```bash
-ng build
-```
+### Requisitos previos
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+- Node.js (LTS recomendado)
+- Angular CLI (`npm install -g @angular/cli`)
+- Backend corriendo en `http://localhost:8080`
 
-## Running unit tests
+### `HttpClient`
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+Registrado globalmente en `app.config.ts` mediante `provideHttpClient()`.
 
-```bash
-ng test
-```
+## 🚀 Cómo ejecutar el proyecto
 
-## Running end-to-end tests
+1. Clona el repositorio:
+   ```bash
+   git clone https://github.com/Orlando-Diaz/inventarios-frontend.git
+   cd inventarios-frontend
+   ```
 
-For end-to-end (e2e) testing, run:
+2. Instala las dependencias:
+   ```bash
+   npm install
+   ```
 
-```bash
-ng e2e
-```
+3. Asegúrate de que el backend esté corriendo en `http://localhost:8080`.
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+4. Levanta el servidor de desarrollo:
+   ```bash
+   ng serve -o
+   ```
 
-## Additional Resources
+5. La aplicación se abrirá en `http://localhost:4200`.
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## 🔗 Proyecto relacionado
+
+- Backend (Spring Boot): [control-inventario](https://github.com/Orlando-Diaz/control-inventario)
+
+## 🗺️ Roadmap
+
+- [x] Proyecto inicial con Angular CLI
+- [x] Integración de Bootstrap (tema oscuro)
+- [x] Modelo `Producto`
+- [x] `ProductoService` con métodos CRUD
+- [x] Listado de productos consumiendo la API real (con Signals)
+- [ ] Formulario de creación de productos
+- [ ] Formulario de edición de productos
+- [ ] Eliminación de productos desde la interfaz
+- [ ] Validaciones de formulario
+- [ ] Manejo visual de errores (mensajes al usuario)
+
+## 📝 Notas de desarrollo
+
+Este proyecto se documenta progresivamente a medida que se agregan funcionalidades. Los commits siguen la convención [Conventional Commits](https://www.conventionalcommits.org/):
+
+- `feat:` nueva funcionalidad
+- `fix:` corrección de errores
+- `docs:` cambios en documentación
+- `chore:` tareas de mantenimiento
+
+## 👤 Autor
+
+Orlando Díaz
