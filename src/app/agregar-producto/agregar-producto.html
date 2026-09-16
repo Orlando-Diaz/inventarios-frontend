@@ -1,0 +1,47 @@
+<div class="container" style="margin-top: 30px; max-width: 500px;">
+  <h3 class="text-center mb-4">Agregar producto</h3>
+
+  <form [formGroup]="productoForm" (ngSubmit)="guardar()">
+
+    <div class="mb-3">
+      <label for="descripcion" class="form-label">Descripción</label>
+      <input
+        type="text"
+        class="form-control"
+        id="descripcion"
+        formControlName="descripcion"
+      >
+      @if (productoForm.get('descripcion')?.invalid && productoForm.get('descripcion')?.touched) {
+        <div class="text-danger small">La descripción debe tener al menos 3 caracteres.</div>
+      }
+    </div>
+
+    <div class="mb-3">
+      <label for="precio" class="form-label">Precio</label>
+      <input
+        type="number"
+        class="form-control"
+        id="precio"
+        formControlName="precio"
+      >
+      @if (productoForm.get('precio')?.invalid && productoForm.get('precio')?.touched) {
+        <div class="text-danger small">El precio debe ser mayor a 0.</div>
+      }
+    </div>
+
+    <div class="mb-3">
+      <label for="existencia" class="form-label">Existencia</label>
+      <input
+        type="number"
+        class="form-control"
+        id="existencia"
+        formControlName="existencia"
+      >
+      @if (productoForm.get('existencia')?.invalid && productoForm.get('existencia')?.touched) {
+        <div class="text-danger small">La existencia no puede ser negativa.</div>
+      }
+    </div>
+
+    <button type="submit" class="btn btn-primary w-100">Guardar</button>
+  </form>
+</div>
